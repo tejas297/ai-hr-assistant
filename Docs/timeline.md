@@ -7,4 +7,5 @@
 4. improve chunker with required metadata for chunks. created ingesion service which is our RAG ingestion pipeline. ok swo the records with embedding vector store in table succesfully, now we move to similarity search. now we are creating embedding from query and retrive similar chunks via sementic searching.
 5. now we have test with three diffrent query, to decide threshold value. we have using the fiex-size chunk strategy. we can also implement the other stretagy to optimize chunks which impact on relevent chunks searching and give best semantically nearest chuncks to the query. here we use cosien distance formula to measure the similarity distance.
 6. now we are moving the context builder which use to package those retrieval pieces so the LLM can understand exactly where they came from. so it return the context string which we can use for further processes. 
-7. now we are moving to prompt construction. 
+7. now we are moving to prompt construction.
+8. the llm client has been created. now we have created rag service class which connect all pipeline components. it is orchestration function. congratulations! your RAG pipeline developed and work end to end succesfully.
