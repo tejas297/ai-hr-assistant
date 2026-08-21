@@ -1,4 +1,3 @@
-
 def chunk_text(
     text: str,
     chunk_size: int = 1000,
@@ -21,5 +20,41 @@ def chunk_text(
             chunks.append(chunk.strip())
 
         start += chunk_size - overlap
+
+    return chunks
+
+
+def chunk_pages(
+    pages: list[dict],
+    chunk_size: int = 1000,
+    overlap: int = 200,
+) -> list[dict]:
+
+    chunks = []
+
+    global_chunk_index = 0
+
+    for page in pages:
+
+        page_number = page["page_number"]
+        text = page["text"]
+
+        page_chunks = chunk_text(
+            text=text,
+            chunk_size=chunk_size,
+            overlap=overlap,
+        )
+
+        for chunk in page_chunks:
+
+            chunks.append(
+                {
+                    "page_number": page_number,
+                    "chunk_index": global_chunk_index,
+                    "content": chunk,
+                }
+            )
+
+            global_chunk_index += 1
 
     return chunks

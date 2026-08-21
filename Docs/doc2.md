@@ -34,3 +34,54 @@ User question
 ```
 
 - This is how RAG work internally.
+
+
+##  we use cosine distance.
+
+conceptually :
+
+```
+similarity(query, chunk)
+
+        ↑
+        │
+        ├── 1.0 → very similar
+        │
+        ├── 0.5 → somewhat similar
+        │
+        └── 0.0 → very different
+```
+
+
+## user interaction flow :
+
+```
+                    USER
+                      │
+                      ▼
+              "How many paid
+               leaves do I get?"
+                      │
+                      ▼
+              Query Embedding
+                      │
+                      ▼
+              Vector Search
+                      │
+                      ▼
+              Top-K HR Chunks
+                      │
+                      ▼
+              Context Builder
+                      │
+                      ▼
+              ┌───────────────┐
+              │      LLM      │
+              └───────┬───────┘
+                      │
+                      ▼
+              Grounded Answer
+                      │
+                      ▼
+                Source/Page
+```

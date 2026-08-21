@@ -6,7 +6,7 @@
 
 ## Core flow
 ```
-    HR Admin
+ HR Admin
    │
    │ Upload HR Policy
    ▼

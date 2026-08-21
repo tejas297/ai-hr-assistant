@@ -1,14 +1,31 @@
-from app.ingestion.chunker import chunk_text
+from app.ingestion.chunker import chunk_pages
 
 
-def test_chunk_text():
-    text = "A" * 2500
+def test_chunk_pages_preserves_page_number():
 
-    chunks = chunk_text(
-        text,
-        chunk_size=1000,
-        overlap=200,
+    pages = [
+        {
+            "page_number": 1,
+            "text": "A" * 100,
+        },
+        {
+            "page_number": 2,
+            "text": "B" * 100,
+        },
+    ]
+
+    chunks = chunk_pages(
+        pages,
+        chunk_size=50,
+        overlap=10,
     )
 
-    assert len(chunks) > 1
-    assert all(len(chunk) <= 1000 for chunk in chunks)
+    assert len(chunks) > 0
+
+    assert chunks[0]["page_number"] == 1
+    assert chunks[0]["chunk_index"] == 0
+
+    assert any(
+        chunk["page_number"] == 2
+        for chunk in chunks
+    )

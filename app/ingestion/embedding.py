@@ -1,34 +1,23 @@
-import os
-
-from dotenv import load_dotenv
-from openai import OpenAI
+from sentence_transformers import SentenceTransformer
 
 
-load_dotenv()
+MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-
-if not OPENAI_API_KEY:
-    raise RuntimeError("OPENAI_API_KEY is not configured")
-
-
-client = OpenAI(api_key=OPENAI_API_KEY)
-
-
-EMBEDDING_MODEL = "text-embedding-3-small"
+model = SentenceTransformer(MODEL_NAME)
 
 
 def generate_embedding(text: str) -> list[float]:
     """
-    Generate an embedding vector for a single text chunk.
+    Generate a local embedding for a single text chunk.
     """
 
     if not text.strip():
         raise ValueError("Cannot generate embedding for empty text")
 
-    response = client.embeddings.create(
-        model=EMBEDDING_MODEL,
-        input=text,
+    embedding = model.encode(
+        text,
+        convert_to_numpy=True,
+        normalize_embeddings=True,
     )
 
-    return response.data[0].embedding
+    return embedding.tolist()

@@ -37,3 +37,32 @@
     LLM generates response (Grounded, context-aware answer)
 
 ```
+
+## threshold implimentation give us an important RAG safety machanism 
+
+```
+User:
+"What is the maternity leave policy?"
+
+             ↓
+
+Embedding
+             ↓
+
+Vector Search
+             ↓
+
+Best distance = 0.7301
+             ↓
+
+0.7301 > 0.5
+             ↓
+
+NO RELEVANT HR CONTEXT
+             ↓
+
+Don't call LLM with unrelated documents
+             ↓
+"I couldn't find this information
+ in the available HR policies."
+```
