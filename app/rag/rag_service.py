@@ -58,13 +58,27 @@ class RAGService:
 
         answer = self.llm.generate(prompt)
 
-        sources = [
-            Source(
-                document_name=result.chunk.document_name,
-                page_number=result.chunk.page_number,
+        sources = []
+
+        seen = set()
+
+        for result in results:
+            source_key = (
+                result.chunk.document_name,
+                result.chunk.page_number,
             )
-            for result in results
-        ]
+
+            if source_key in seen:
+                continue
+
+            seen.add(source_key)
+
+            sources.append(
+                Source(
+                    document_name=result.chunk.document_name,
+                    page_number=result.chunk.page_number,
+                )
+            )
 
         return RAGResponse(
             answer=answer,

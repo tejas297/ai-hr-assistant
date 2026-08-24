@@ -85,3 +85,11 @@ similarity(query, chunk)
                       ▼
                 Source/Page
 ```
+
+
+
+to access the database :
+- psql -h localhost -U hr_user -d hr_assistant
+
+to enable the vector extension :
+- CREATE EXTENSION IF NOT EXISTS vector;

@@ -8,4 +8,5 @@
 5. now we have test with three diffrent query, to decide threshold value. we have using the fiex-size chunk strategy. we can also implement the other stretagy to optimize chunks which impact on relevent chunks searching and give best semantically nearest chuncks to the query. here we use cosien distance formula to measure the similarity distance.
 6. now we are moving the context builder which use to package those retrieval pieces so the LLM can understand exactly where they came from. so it return the context string which we can use for further processes. 
 7. now we are moving to prompt construction.
-8. the llm client has been created. now we have created rag service class which connect all pipeline components. it is orchestration function. congratulations! your RAG pipeline developed and work end to end succesfully.
+8. the llm client has been created. now we have created rag service class which connect all pipeline components. it is orchestration function. congratulations! your core RAG pipeline developed and work end to end succesfully. also integrate with the fast api endpoint.
+8. now we should make backend production-quality first. our next milestone is "error handling and clean dependency management".

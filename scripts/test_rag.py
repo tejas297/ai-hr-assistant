@@ -8,8 +8,10 @@ from app.rag.rag_service import RAGService
 load_dotenv()
 
 
-QUESTION = "What is the approval process for IT assets?" # test - 1
+# QUESTION = "What is the approval process for IT assets?" # test - 1
 # QUESTION = "What is the company's maternity leave policy?" # test - 2
+
+QUESTION = "The IT department must work with whom to develop an annual budget for IT assets?" # test - 2
 
 def main():
 
