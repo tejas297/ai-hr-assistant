@@ -93,3 +93,6 @@ to access the database :
 
 to enable the vector extension :
 - CREATE EXTENSION IF NOT EXISTS vector;
+
+
+

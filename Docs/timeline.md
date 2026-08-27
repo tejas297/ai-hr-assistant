@@ -10,3 +10,5 @@
 7. now we are moving to prompt construction.
 8. the llm client has been created. now we have created rag service class which connect all pipeline components. it is orchestration function. congratulations! your core RAG pipeline developed and work end to end succesfully. also integrate with the fast api endpoint.
 8. now we should make backend production-quality first. our next milestone is "error handling and clean dependency management".
+9. now we create fakeLLM so while testing dont required to call real LLm model. 
+10. so we are implementing the conversation history ,with two tables 1. conversations and 2. messages. the conversations table store session_id which refer to list of messages for that session.

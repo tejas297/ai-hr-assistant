@@ -265,3 +265,21 @@ without redesigning the entire application.
     Department-specific policies
 ```
 
+```
+conversations
+-------------------------
+id
+session_id
+created_at
+updated_at
+
+
+messages
+-------------------------
+id
+conversation_id
+role
+content
+created_at
+
+```

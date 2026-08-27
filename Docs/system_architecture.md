@@ -94,3 +94,27 @@ Employee
 │ Answer + Sources        │
 └─────────────────────────┘
  ```
+
+ aws architecture DEMO
+
+ ```
+                          Internet
+                            │
+                            ▼
+                      API Gateway
+                            │
+          ┌─────────────────┼─────────────────┐
+          │                 │                 │
+          ▼                 ▼                 ▼
+      /users/*          /products/*       /orders/*
+          │                 │                 │
+          ▼                 ▼                 ▼
+        ALB               ALB               ALB
+          │                 │                 │
+       ┌──┴──┐           ┌──┴──┐           ┌──┴──┐
+       ▼     ▼           ▼     ▼           ▼     ▼
+      EC2   EC2         EC2   EC2         EC2   EC2
+       │                 │                 │
+       ▼                 ▼                 ▼
+    User DB          Product DB         Order DB
+ ```
