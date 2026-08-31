@@ -11,3 +11,4 @@ class Source:
 class RAGResponse:
     answer: str
     sources: list[Source]
+    reasoning: str = ""

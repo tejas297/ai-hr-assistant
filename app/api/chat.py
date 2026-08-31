@@ -1,11 +1,16 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
+from app.api.dependencies import (
+    get_conversation_service,
+    get_rag_service,
+)
 from app.api.schemas import ChatRequest, ChatResponse
+from app.conversation.history import build_history
+from app.conversation.service import ConversationService
 from app.database.connection import SessionLocal
-from app.llm.groq_client import GroqClient
 from app.rag.rag_service import RAGService
-from app.api.dependencies import get_rag_service
+
 
 router = APIRouter()
 
@@ -24,21 +29,55 @@ def chat(
     request: ChatRequest,
     db: Session = Depends(get_db),
     rag_service: RAGService = Depends(get_rag_service),
-
+    conversation_service: ConversationService = Depends(
+        get_conversation_service
+    ),
 ):
-    # llm = GroqClient()
+    conversation = (
+        conversation_service.get_or_create_conversation(
+            db=db,
+            session_id=request.session_id,
+        )
+    )
 
-    # rag_service = RAGService(
-    #     llm=llm,
-    # )
+    history_messages = (
+        conversation_service.get_recent_messages(
+            db=db,
+            conversation_id=conversation.id,
+            limit=10,
+        )
+    )
 
-    result = rag_service.answer(
+    history = build_history(history_messages)
+
+    conversation_service.add_message(
+        db=db,
+        conversation_id=conversation.id,
+        role="user",
+        content=request.question,
+    )
+
+
+    try:
+         result = rag_service.answer(
         db=db,
         question=request.question,
+        history=history,
+    )
+    except Exception:
+        db.rollback()
+        raise
+
+    conversation_service.add_message(
+        db=db,
+        conversation_id=conversation.id,
+        role="assistant",
+        content=result.answer,
     )
 
     return ChatResponse(
         answer=result.answer,
+        reasoning=result.reasoning,
         sources=[
             {
                 "document_name": source.document_name,

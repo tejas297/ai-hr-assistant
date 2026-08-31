@@ -1,6 +1,6 @@
 from unittest.mock import Mock, patch
 
-from app.rag.rag_service import RAGService
+from app.rag.rag_service import RAGService, split_reasoning
 
 
 class FakeLLM:
@@ -11,6 +11,15 @@ class FakeLLM:
     def generate(self, prompt: str) -> str:
         self.called = True
         return "This is a test answer."
+
+
+def test_split_reasoning_keeps_reasoning_out_of_answer():
+    answer, reasoning = split_reasoning(
+        "<think>Use the policy context.</think>\nThe policy answer."
+    )
+
+    assert answer == "The policy answer."
+    assert reasoning == "Use the policy context."
 
 
 def test_rag_returns_answer_and_sources():

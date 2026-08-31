@@ -18,7 +18,7 @@ class ConversationService:
 
         conversation = db.scalar(statement)
 
-        if conversation:
+        if conversation is not None:
             return conversation
 
         conversation = Conversation(
@@ -38,6 +38,11 @@ class ConversationService:
         role: str,
         content: str,
     ) -> Message:
+
+        if role not in {"user", "assistant"}:
+            raise ValueError(
+                "role must be either 'user' or 'assistant'"
+            )
 
         message = Message(
             conversation_id=conversation_id,
@@ -59,8 +64,38 @@ class ConversationService:
 
         statement = (
             select(Message)
-            .where(Message.conversation_id == conversation_id)
-            .order_by(Message.created_at, Message.id)
+            .where(
+                Message.conversation_id == conversation_id
+            )
+            .order_by(
+                Message.created_at,
+                Message.id,
+            )
         )
 
         return list(db.scalars(statement).all())
+
+    def get_recent_messages(
+        self,
+        db: Session,
+        conversation_id: int,
+        limit: int = 10,
+    ) -> list[Message]:
+
+        statement = (
+            select(Message)
+            .where(
+                Message.conversation_id == conversation_id
+            )
+            .order_by(
+                Message.created_at.desc(),
+                Message.id.desc(),
+            )
+            .limit(limit)
+        )
+
+        messages = list(db.scalars(statement).all())
+
+        messages.reverse()
+
+        return messages
