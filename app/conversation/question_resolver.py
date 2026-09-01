@@ -1,3 +1,5 @@
+import re
+
 from app.llm.client import LLMClient
 
 
@@ -46,7 +48,15 @@ Latest user question:
 Rewritten question:
 """.strip()
 
-        resolved = self.llm.generate(prompt).strip()
+        response = self.llm.generate(prompt).strip()
+
+        # Extract content after thinking blocks if present
+        resolved = re.sub(
+            r"<(?:think|thinking)>.*?</(?:think|thinking)>\s*",
+            "",
+            response,
+            flags=re.IGNORECASE | re.DOTALL,
+        ).strip()
 
         if not resolved:
             return question
