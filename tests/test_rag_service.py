@@ -22,6 +22,18 @@ def test_split_reasoning_keeps_reasoning_out_of_answer():
     assert reasoning == "Use the policy context."
 
 
+def test_split_reasoning_strips_thinking_prefix_without_tags():
+    answer, reasoning = split_reasoning(
+        "Here's a thinking process:\n"
+        "1. Check the reward policy.\n"
+        "2. Summarize the award rules.\n\n"
+        "The policy answer."
+    )
+
+    assert answer == "The policy answer."
+    assert reasoning == "1. Check the reward policy.\n2. Summarize the award rules."
+
+
 def test_rag_returns_answer_and_sources():
 
     fake_result = Mock()

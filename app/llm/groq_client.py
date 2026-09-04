@@ -23,6 +23,13 @@ class GroqClient(LLMClient):
             model="qwen/qwen3.6-27b",
             messages=[
                 {
+                    "role": "system",
+                    "content": (
+                        "Answer only with the final user-facing response. "
+                        "Do not expose internal reasoning, analysis, or think blocks."
+                    ),
+                },
+                {
                     "role": "user",
                     "content": prompt,
                 }

@@ -12,19 +12,42 @@ from app.retrieval.search import search_similar_chunks
 
 def split_reasoning(response: str) -> tuple[str, str]:
     """Separate optional model reasoning from the user-facing answer."""
+    if not response:
+        return "", ""
+
+    raw_response = response.strip()
+
     reasoning_blocks = re.findall(
-        r"<(?:think|thinking)>(.*?)</(?:think|thinking)>",
-        response,
+        r"<(?:think|thinking)\b[^>]*>(.*?)</(?:think|thinking)\s*>",
+        raw_response,
         flags=re.IGNORECASE | re.DOTALL,
     )
+
     answer = re.sub(
-        r"\s*<(?:think|thinking)>.*?</(?:think|thinking)>\s*",
+        r"\s*<(?:think|thinking)\b[^>]*>.*?</(?:think|thinking)\s*>\s*",
         "\n",
-        response,
+        raw_response,
         flags=re.IGNORECASE | re.DOTALL,
     ).strip()
 
-    return answer, "\n\n".join(block.strip() for block in reasoning_blocks)
+    if reasoning_blocks:
+        return answer, "\n\n".join(block.strip() for block in reasoning_blocks)
+
+    reasoning_prefix = re.compile(
+        r"(?is)^(?:here's\s+)?(?:a\s+)?(?:thinking process|analysis|reasoning)\s*[:\-]?\s*"
+    )
+    parts = re.split(r"\n\s*\n+", raw_response, maxsplit=1)
+
+    if len(parts) == 2:
+        first_part = parts[0].strip()
+        second_part = parts[1].strip()
+
+        if reasoning_prefix.match(first_part):
+            reasoning_text = reasoning_prefix.sub("", first_part).strip()
+            if reasoning_text:
+                return second_part, reasoning_text
+
+    return answer or raw_response, "\n\n".join(block.strip() for block in reasoning_blocks)
 
 
 class RAGService:
