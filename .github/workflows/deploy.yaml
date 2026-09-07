@@ -54,6 +54,6 @@ jobs:
           execution-role-arn: ${{ secrets.ECS_EXECUTION_ROLE_ARN }}
           infrastructure-role-arn: ${{ secrets.ECS_INFRASTRUCTURE_ROLE_ARN }}
           environment: >-
-            [{"name":"DATABASE_URL","value":"${{ secrets.DATABASE_URL }}"},
-             {"name":"OPENAI_API_KEY","value":"${{ secrets.OPENAI_API_KEY }}"},
-             {"name":"GROQ_API_KEY","value":"${{ secrets.GROQ_API_KEY }}"}] 
+            [{"name":"DATABASE_URL","value":"postgresql://postgres:Tejas12345@database-1.cveky66c239g.ap-south-1.rds.amazonaws.com:5432/postgres"},
+             {"name":"OPENAI_API_KEY","value":"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"},
+             {"name":"GROQ_API_KEY","value":"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"}] 
