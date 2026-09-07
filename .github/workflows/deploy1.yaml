@@ -1,0 +1,59 @@
+# name: Deploy backend to AWS
+
+# on:
+#   push:
+#     branches: [main]
+
+# permissions:
+#   id-token: write   # needed for OIDC auth to AWS (no stored AWS keys)
+#   contents: read
+
+# env:
+#   AWS_REGION: ap-south-1                # change to your region
+#   ECR_REPOSITORY: ai-hr-assistant-backend
+
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
+#     environment: dev
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v4
+
+#       - name: Configure AWS credentials (OIDC)
+#         uses: aws-actions/configure-aws-credentials@v4
+#         with:
+#           role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+#           aws-region: ${{ env.AWS_REGION }}
+
+#       - name: Login to Amazon ECR
+#         id: login-ecr
+#         uses: aws-actions/amazon-ecr-login@v2
+
+#       - name: Build, tag, and push image
+#         id: build-image
+#         env:
+#           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#           IMAGE_TAG: ${{ github.sha }}
+#         run: |
+#           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+#                         -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+#           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+#           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+#           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+
+#       # ECS Express Mode: same "just give me a container and a URL" simplicity
+#       # App Runner had, minus App Runner (closed to new customers since 30 Apr 2026).
+#       - name: Deploy to ECS Express Mode
+#         uses: aws-actions/amazon-ecs-deploy-express-service@v1
+#         with:
+#           service-name: ai-hr-assistant-backend
+#           image: ${{ steps.build-image.outputs.image }}
+#           container-port: 8000
+#           health-check-path: /health
+#           execution-role-arn: ${{ secrets.ECS_EXECUTION_ROLE_ARN }}
+#           infrastructure-role-arn: ${{ secrets.ECS_INFRASTRUCTURE_ROLE_ARN }}
+#           environment: >-
+#             [{"name":"DATABASE_URL","value":"${{ secrets.DATABASE_URL }}"},
+#              {"name":"OPENAI_API_KEY","value":"${{ secrets.OPENAI_API_KEY }}"},
+#              {"name":"GROQ_API_KEY","value":"${{ secrets.GROQ_API_KEY }}"}] 
