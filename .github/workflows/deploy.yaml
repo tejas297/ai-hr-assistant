@@ -52,6 +52,8 @@ jobs:
           execution-role-arn: ${{ secrets.ECS_EXECUTION_ROLE_ARN }}
           infrastructure-role-arn: ${{ secrets.ECS_INFRASTRUCTURE_ROLE_ARN }}
           environment-variables: |
-            DATABASE_URL=${{ secrets.DATABASE_URL }}
-            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
-            GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}
+            [
+              {"name":"DATABASE_URL","value":"${{ secrets.DATABASE_URL }}"},
+              {"name":"OPENAI_API_KEY","value":"${{ secrets.OPENAI_API_KEY }}"},
+              {"name":"GROQ_API_KEY","value":"${{ secrets.GROQ_API_KEY }}"}
+            ]
