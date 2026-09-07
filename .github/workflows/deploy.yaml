@@ -42,24 +42,16 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> "$GITHUB_OUTPUT"
 
-      - name: Render task definition with env vars
-        id: render-task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition-arn: arn:aws:ecs:ap-south-1:100697278889:task-definition/default-ai-hr-assistant-backend
-          container-name: Main
-          image: ${{ steps.build-image.outputs.image }}
-          environment-variables: |
-            DATABASE_URL=${{ secrets.DATABASE_URL }}
-            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
-            GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}
-
       - name: Deploy to ECS Express Mode
         uses: aws-actions/amazon-ecs-deploy-express-service@v1
         with:
           service-name: ai-hr-assistant-backend
-          task-definition: ${{ steps.render-task-def.outputs.task-definition }}
+          image: ${{ steps.build-image.outputs.image }}
           container-port: 8000
           health-check-path: /health
           execution-role-arn: ${{ secrets.ECS_EXECUTION_ROLE_ARN }}
           infrastructure-role-arn: ${{ secrets.ECS_INFRASTRUCTURE_ROLE_ARN }}
+          environment-variables: |
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+            GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}
